@@ -1,368 +1,254 @@
 import 'package:flutter/material.dart';
 
+import 'common_widgets.dart';
 import 'main.dart';
+import 'models.dart';
+import 'patient_screen.dart';
+import 'segmentation_result_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _index = 0;
-
-  @override
   Widget build(BuildContext context) {
+    final recent = sampleAnalyses.take(2).toList();
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      bottomNavigationBar: const AppBottomNav(),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 20),
-              _buildNewAnalysisCard(),
-              const SizedBox(height: 24),
-              _buildRecentHeader(),
-              const SizedBox(height: 10),
-              const _RecentCard(
-                icon: Icons.center_focus_strong_outlined,
-                name: 'Nala',
-                zone: 'Zona abdominal',
-                date: 'Hoy, 09:12',
-                status: 'Revisar',
-                statusColor: AppColors.orange,
-                statusBg: AppColors.orangeSoft,
-              ),
-              const SizedBox(height: 10),
-              const _RecentCard(
-                icon: Icons.pets,
-                name: 'Nala',
-                zone: 'Pata delantera',
-                date: '24 sep',
-                status: 'Sin cambios',
-                statusColor: AppColors.orange,
-                statusBg: AppColors.orangeSoft,
-              ),
-              const SizedBox(height: 24),
-              _buildPreventiveCard(),
-              const SizedBox(height: 16),
-              _buildDisclaimer(),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.transparent,
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_outlined, color: AppColors.primary),
-            label: 'Inicio',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.photo_camera_outlined),
-            label: 'Analizar',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        const Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Buenos días, Elena',
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted),
-              ),
-              SizedBox(height: 2),
-              Text(
-                '¿Cómo está Nala hoy?',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textDark,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: const Color(0xFFE8D9BF),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          // child: ClipRRect(child: Image.asset('assets/nala.jpg')),
-          child: const Icon(Icons.pets, color: Color(0xFF8A6A3B)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNewAnalysisCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.3),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.photo_camera_outlined,
-                color: AppColors.primary, size: 26),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const Text(
-                  'Comienza un nuevo\nanálisis',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Toma una foto clara de la zona que quieres observar.',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontSize: 11,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: () {},
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Abrir cámara',
+                      const Text('Buenos días, Dra. Elena',
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.textMuted)),
+                      const SizedBox(height: 2),
+                      const Text(
+                        'Nala · M-024 · citología cutánea',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textDark,
                         ),
                       ),
-                      SizedBox(width: 6),
-                      Icon(Icons.arrow_forward,
-                          color: Colors.white, size: 14),
                     ],
                   ),
                 ),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PatientScreen()),
+                  ),
+                  child: const PatientAvatar(size: 38),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          'Análisis recientes',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {},
-          child: const Text(
-            'Ver todos',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPreventiveCard() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.orangeSoft,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.orange.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.favorite_border,
-                color: AppColors.orange, size: 22),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 16),
+            _UploadCard(onTap: () => tabIndex.value = 1),
+            const SizedBox(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'CUIDADO PREVENTIVO',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                    color: AppColors.orange,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Haz una revisión visual mensual',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Busca cambios de forma, color o tamaño y registra una foto con luz natural.',
-                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                const Text('Muestras recientes',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textDark)),
+                GestureDetector(
+                  onTap: () => tabIndex.value = 2,
+                  child: const Text('Ver historial',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary)),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDisclaimer() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.mint.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.info_outline, size: 18, color: AppColors.primary),
-          SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              'Los resultados son orientativos y no sustituyen un diagnóstico. Revísalos siempre con un profesional veterinario.',
-              style: TextStyle(fontSize: 10.5, color: AppColors.textMuted),
+            const SizedBox(height: 10),
+            for (final a in recent) ...[
+              _RecentTile(analysis: a),
+              const SizedBox(height: 10),
+            ],
+            const SizedBox(height: 6),
+            AppCard(
+              color: AppColors.orangeSoft,
+              borderColor: const Color(0xFFF7D8C4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.biotech_outlined,
+                        size: 18, color: AppColors.orange),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('TRABAJO CON MUESTRAS',
+                            style: TextStyle(
+                                fontSize: 9,
+                                letterSpacing: 0.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.orange)),
+                        SizedBox(height: 3),
+                        Text('Revisa la muestra con luz uniforme',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textDark)),
+                        SizedBox(height: 3),
+                        Text(
+                          'Usa una imagen microscópica nítida y evita sombras '
+                          'para mejorar la segmentación de colores.',
+                          style: TextStyle(
+                              fontSize: 11.5,
+                              height: 1.35,
+                              color: AppColors.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 14),
+            const InfoBanner(
+              'Los resultados de segmentación son apoyo a revisión clínica. '
+              'No sustituyen el diagnóstico profesional.',
+              icon: Icons.help_outline,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _RecentCard extends StatelessWidget {
-  const _RecentCard({
-    required this.icon,
-    required this.name,
-    required this.zone,
-    required this.date,
-    required this.status,
-    required this.statusColor,
-    required this.statusBg,
-  });
+class _UploadCard extends StatelessWidget {
+  const _UploadCard({required this.onTap});
 
-  final IconData icon;
-  final String name;
-  final String zone;
-  final String date;
-  final String status;
-  final Color statusColor;
-  final Color statusBg;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+    return Material(
+      color: AppColors.primary,
+      borderRadius: BorderRadius.circular(18),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.file_upload_outlined,
+                    color: AppColors.primary),
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Subir imagen microscópica',
+                        style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
+                            height: 1.15,
+                            color: Colors.white)),
+                    SizedBox(height: 6),
+                    Text(
+                      'Carga la muestra M-024 para segmentación de colores y '
+                      'apoyo a revisión clínica.',
+                      style: TextStyle(
+                          fontSize: 11.5, height: 1.35, color: Colors.white70),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Subir archivo',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white)),
+                        SizedBox(width: 6),
+                        Icon(Icons.arrow_forward,
+                            size: 14, color: Colors.white),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecentTile extends StatelessWidget {
+  const _RecentTile({required this.analysis});
+
+  final Analysis analysis;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (_) => SegmentationResultScreen(analysis: analysis)),
       ),
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: AppColors.mint,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 22),
+            child: const Icon(Icons.biotech_outlined,
+                size: 20, color: AppColors.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  zone,
-                  style: const TextStyle(
-                      fontSize: 12, color: AppColors.textMuted),
+                Text('${analysis.patient} · ${analysis.id}',
+                    style: const TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textDark)),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    Text(analysis.type,
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textMuted)),
+                    const SizedBox(width: 8),
+                    StatusChip.status(analysis.status),
+                  ],
                 ),
               ],
             ),
@@ -370,45 +256,11 @@ class _RecentCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                date,
-                style:
-                    const TextStyle(fontSize: 10, color: AppColors.textMuted),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: statusBg,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 5,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: statusColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              Text(analysis.date,
+                  style: const TextStyle(
+                      fontSize: 10.5, color: AppColors.textMuted)),
             ],
           ),
-          const SizedBox(width: 4),
           const Icon(Icons.chevron_right,
               size: 18, color: AppColors.textMuted),
         ],
